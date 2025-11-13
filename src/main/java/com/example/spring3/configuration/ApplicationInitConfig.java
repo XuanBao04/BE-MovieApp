@@ -1,19 +1,15 @@
 package com.example.spring3.configuration;
 
 import com.example.spring3.entity.User;
-import com.example.spring3.enums.Role;
 import com.example.spring3.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.HashSet;
 
 @Configuration
 @RequiredArgsConstructor
@@ -24,13 +20,11 @@ public class ApplicationInitConfig {
     @Bean
     ApplicationRunner applicationRunner(UserRepository userRepository){
        return args -> {
-           if(userRepository.findByUsername("admin").isEmpty()){
-               var roles = new HashSet<String>();
-               roles.add(Role.admin.name());
+           if(userRepository.findByEmail("admin@cinema.com").isEmpty()){
                User user = User.builder()
-                       .username("admin")
+                       .email("admin@cinema.com")
                        .password(passwordEncoder.encode("admin"))
-                   //    .roles(roles)
+                       .role("ADMIN")
                        .build();
                userRepository.save(user);
                log.warn("admin user has been created with default password: admin");

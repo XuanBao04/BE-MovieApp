@@ -13,7 +13,6 @@ import org.mapstruct.*;
 public interface UserMapper {
     User toUser(UserCreateRequest request);
     UserResponse toUserResponse(User user);
-    @Mapping(target = "roles",ignore = true)
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
 }
 

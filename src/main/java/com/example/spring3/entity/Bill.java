@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Entity @Table(name="bills")
-@Data @NoArgsConstructor @AllArgsConstructor
+@Entity
+@Table(name = "bills")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
@@ -16,12 +19,11 @@ public class Bill {
     private String billId;
 
     @ManyToOne
-    @JoinColumn(name="payment_id")
+    @JoinColumn(name = "payment_id")
     private Payment payment;
 
-
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "total_amount")

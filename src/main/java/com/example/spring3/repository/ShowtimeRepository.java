@@ -20,7 +20,7 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, String> {
   @Query("""
           SELECT s FROM Showtime s
           WHERE s.movie.movieId = :movieId
-            AND FUNCTION('DATE', s.startTime) = :date
+            AND DATE(s.startTime) = :date
             AND s.room.roomId = :roomId
           ORDER BY s.startTime
       """)

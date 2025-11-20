@@ -1,11 +1,11 @@
 package com.example.spring3.repository;
 
+import com.example.spring3.entity.Movie;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.spring3.entity.Movie;
-import org.springframework.stereotype.Repository;
+import java.time.LocalDate;
+import java.util.List;
 
-@Repository
 public interface MovieRepository extends JpaRepository<Movie, String> {
-
+    List<Movie> findByReleaseDateBefore(LocalDate date);
 }

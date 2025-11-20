@@ -20,9 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@Service
 @Slf4j
 public class UserService {
     UserRepository userRepository;
@@ -30,13 +30,14 @@ public class UserService {
     PasswordEncoder passwordEncoder;
 
     // tạo user
-    public UserResponse createRequest(UserCreateRequest request){
+    public UserResponse createRequest(UserCreateRequest request) {
         if (userRepository.existsByEmail(request.getEmail()))
             throw new AppException(ErrorCode.USER_EXIST);
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         return userMapper.toUserResponse(userRepository.save(user));
     }
+
     // lấy all danh sách
     @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getUsers() {
@@ -47,33 +48,34 @@ public class UserService {
     }
 
     // lấy 1 user theo id
-    public UserResponse getUser(String id){
-        return  userMapper.toUserResponse(userRepository.findById(id)
-                .orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXIST)));
+    public UserResponse getUser(String id) {
+        return userMapper.toUserResponse(userRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST)));
     }
 
     // lấy thông tin người dùng đang đăng nhập
-    public  UserResponse getMyInfo(){
+    public UserResponse getMyInfo() {
         var context = SecurityContextHolder.getContext();
         String email = context.getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(
-              ()->new AppException(ErrorCode.USER_NOT_EXIST));
+                () -> new AppException(ErrorCode.USER_NOT_EXIST));
 
-      return userMapper.toUserResponse(user);
+        return userMapper.toUserResponse(user);
     }
+
     // update thông tin user
-    public UserResponse updateUser(String userId, UserUpdateRequest request){
-       User user = userRepository.findById(userId)
-               .orElseThrow(()->new RuntimeException("user not found"));
-       userMapper.updateUser(user,request);
-       user.setPassword(passwordEncoder.encode(request.getPassword()));
+    public UserResponse updateUser(String userId, UserUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("user not found"));
+        userMapper.updateUser(user, request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
+
     // xóa user
-    public void deleteUser(String userId){
+    public void deleteUser(String userId) {
         userRepository.deleteById(userId);
     }
-
 
 }

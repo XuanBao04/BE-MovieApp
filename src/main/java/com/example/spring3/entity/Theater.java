@@ -21,7 +21,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
-class Theater {
+public class Theater {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "theater_id")

@@ -22,7 +22,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-class Room {
+public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "room_id")

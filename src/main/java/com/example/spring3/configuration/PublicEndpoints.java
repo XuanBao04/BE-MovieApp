@@ -11,6 +11,8 @@ public class PublicEndpoints {
 
         public static final String[] GET = {
                         "/movies/**",
-                        "/showtimes/**"
+                        "/showtimes/**",
+                        "/payment/**",
+                        "/seat/**"
         };
 }

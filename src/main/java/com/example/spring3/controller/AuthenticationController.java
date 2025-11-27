@@ -1,6 +1,7 @@
 package com.example.spring3.controller;
 
 import com.example.spring3.dto.request.*;
+import com.example.spring3.dto.response.ApiResponse;
 import com.example.spring3.dto.response.AuthenticationResponse;
 import com.example.spring3.dto.response.IntrospectResponse;
 import com.example.spring3.service.AuthenticationService;

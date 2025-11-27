@@ -3,14 +3,11 @@ package com.example.spring3.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.spring3.dto.request.ApiResponse;
+import com.example.spring3.dto.response.ApiResponse;
 import com.example.spring3.dto.response.ShowtimeResponse;
-import com.example.spring3.dto.response.UserResponse;
 import com.example.spring3.service.ShowtimeService;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 

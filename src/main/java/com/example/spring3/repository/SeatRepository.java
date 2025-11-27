@@ -13,23 +13,47 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SeatRepository extends JpaRepository<Seat, String> {
 
+    // @Query("""
+    // SELECT new com.example.spring3.dto.response.SeatResponse(
+    // s.seatId,
+    // s.seatRow,
+    // s.seatNumber,
+    // s.seatType,
+    // CASE WHEN t.ticketId IS NOT NULL THEN 1 ELSE 0 END
+    // )
+    // FROM Seat s
+    // JOIN s.room r
+    // JOIN Showtime st ON st.room.roomId = r.roomId
+    // LEFT JOIN Ticket t ON t.seat.seatId = s.seatId
+    // AND t.showtime.showtimeId = st.showtimeId
+    // AND t.status = 1
+    // WHERE st.showtimeId = :showtimeId
+    // ORDER BY s.seatRow, s.seatNumber
+    // """)
+    // List<SeatResponse> getSeatStatusByShowtimeId(String showtimeId);
+
     @Query("""
-    SELECT new com.example.spring3.dto.response.SeatResponse(
-        s.seatId,
-        s.seatRow,
-        s.seatNumber,
-        s.seatType,
-        CASE WHEN t.ticketId IS NOT NULL THEN 1 ELSE 0 END
-    )
-    FROM Seat s
-    JOIN s.room r
-    JOIN Showtime st ON st.room.roomId = r.roomId
-    LEFT JOIN Ticket t ON t.seat.seatId = s.seatId
-        AND t.showtime.showtimeId = st.showtimeId
-        AND t.status = 1
-    WHERE st.showtimeId = :showtimeId
-    ORDER BY s.seatRow, s.seatNumber
-""")
-    List<SeatResponse> getSeatStatusByShowtimeId(String showtimeId);
+                SELECT new com.example.spring3.dto.response.SeatResponse(
+                    s.seatId,
+                    s.seatRow,
+                    s.seatNumber,
+                    s.seatType,
+                    CASE
+                    WHEN t.orderStatus = 'PENDING' THEN 2
+                    WHEN t.orderStatus = 'COMPLETED' THEN 1
+                        ELSE 0
+                    END
+                )
+                FROM Seat s
+                JOIN s.room r
+                JOIN Showtime st ON st.room.roomId = r.roomId
+                LEFT JOIN Ticket t
+                    ON t.seat.seatId = s.seatId
+                    AND t.showtime.showtimeId = st.showtimeId
+
+                WHERE st.showtimeId = :showtimeId
+                ORDER BY s.seatRow, s.seatNumber
+            """)
+    List<SeatResponse> getSeatStatusByShowtimeId1(@Param("showtimeId") String showtimeId);
 
 }

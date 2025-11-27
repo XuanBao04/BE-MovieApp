@@ -12,12 +12,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, String> {
 
-    @Query("""
-            SELECT t
-            FROM Ticket t
-            WHERE t.showtime.showtimeId = :showtimeId
-              AND t.status = 1
-            """)
-    List<Ticket> getBookedSeats(@Param("showtimeId") String showtimeId);
-}
+  @Query("""
+      SELECT t
+      FROM Ticket t
+      WHERE t.showtime.showtimeId = :showtimeId
+        AND t.status = 1
+      """)
+  List<Ticket> getBookedSeats(@Param("showtimeId") String showtimeId);
 
+  List<Ticket> findByVnpTxnRef(String vnpTxnRef);
+}

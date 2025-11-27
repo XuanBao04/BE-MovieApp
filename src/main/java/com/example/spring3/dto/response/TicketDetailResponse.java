@@ -1,6 +1,6 @@
 package com.example.spring3.dto.response;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,14 +9,13 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TheaterShowtimeResponse {
-    String theater_id;
-    String theater_name;
-    String theater_address;
-    // List<ShowtimeResponse> showtimes;
-    List<RoomShowtimeResponse> rooms;
+public class TicketDetailResponse {
+    String ticketId;
+    String type;
+    String seatName;
+    Double ticketPrice;
 }

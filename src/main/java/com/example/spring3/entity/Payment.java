@@ -30,11 +30,7 @@ public class Payment {
     @Column(name = "payment_id")
     String paymentId;
 
-    @ManyToOne
-    @JoinColumn(name = "ticket_id")
-    Ticket ticket;
-
-    Double amount;
+    long amount;
     @Column(name = "payment_method")
     String paymentMethod;
 

@@ -78,4 +78,10 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
+    public User findUserById(String id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("user not found"));
+        return user;
+    }
+
 }

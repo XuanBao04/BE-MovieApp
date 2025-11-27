@@ -95,6 +95,7 @@ public class MovieShowtimeService {
                                 roomResponses.add(new RoomShowtimeResponse(
                                                 room.getRoomId(),
                                                 room.getType(),
+                                                room.getName(),
                                                 showtimeResponses));
                         }
 
@@ -102,6 +103,7 @@ public class MovieShowtimeService {
                         theaters.add(TheaterShowtimeResponse.builder()
                                         .theater_id(theaterId)
                                         .theater_name(theater.getName())
+                                        .theater_address(theater.getAddress())
                                         .rooms(roomResponses)
                                         .build());
                 }

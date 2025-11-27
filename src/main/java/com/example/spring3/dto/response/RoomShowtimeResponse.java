@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class RoomShowtimeResponse {
     private String room_id;
     private String room_type;
+    private String room_name;
     private List<ShowtimeResponse> showtimes;
 }

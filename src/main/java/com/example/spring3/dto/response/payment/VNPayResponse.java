@@ -1,4 +1,4 @@
-package com.example.spring3.dto.response;
+package com.example.spring3.dto.response.payment;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

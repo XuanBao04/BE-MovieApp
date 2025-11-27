@@ -42,12 +42,40 @@ public class Ticket {
     @JoinColumn(name = "user_id")
     User user;
 
+    @ManyToOne
+    @JoinColumn(name = "payment_id")
+    Payment payment;
+
     String type;
+
     @Column(name = "booking_time")
     LocalDateTime bookingTime;
 
     @Column(name = "expire_time")
     LocalDateTime expireTime;
 
+    // Trạng thái vé: 0=Pending/Locked, 1=Completed/Sold
     Integer status;
+
+    // --- Các trường bổ sung cho VNPay & Quản lý Đơn hàng ---
+
+    // Mã giao dịch VNPay (đại diện cho nhóm vé/đơn hàng)
+    @Column(name = "vnp_txn_ref")
+    String vnpTxnRef;
+
+    // Trạng thái đơn hàng: PENDING, COMPLETED, FAILED
+    @Column(name = "order_status")
+    String orderStatus;
+
+    // Thông tin khách hàng (Dùng khi khách không đăng nhập)
+    @Column(name = "customer_name")
+    String customerName;
+
+    @Column(name = "customer_email")
+    String customerEmail;
+
+    @Column(name = "customer_phone")
+    String customerPhone;
+
+    // --------------------------------------------------------
 }

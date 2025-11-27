@@ -21,7 +21,7 @@ public class SeatService {
 
     public List<SeatResponse> getSeatByShowtimeId(String showtimeId) {
 
-        List<SeatResponse> seats = seatRepository.getSeatStatusByShowtimeId(showtimeId);
+        List<SeatResponse> seats = seatRepository.getSeatStatusByShowtimeId1(showtimeId);
         if (seats.isEmpty()) {
             throw new RuntimeException("No showtime found");
         }

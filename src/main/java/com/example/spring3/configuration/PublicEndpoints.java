@@ -6,6 +6,7 @@ public class PublicEndpoints {
                         "/auth/login",
                         "/auth/introspect",
                         "/auth/logout",
+                        "/payment/**",
                         "/auth/refresh"
         };
 
@@ -13,6 +14,8 @@ public class PublicEndpoints {
                         "/movies/**",
                         "/showtimes/**",
                         "/payment/**",
-                        "/seat/**"
+                        "/seat/**",
+                        "/booking/**",
+                        "/ticket/**"
         };
 }

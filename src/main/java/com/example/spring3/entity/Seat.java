@@ -40,4 +40,11 @@ public class Seat {
 
     @Column(name = "seat_type")
     String seatType;
+
+    // --- Trường bổ sung cho Trạng thái ghế ---
+
+    // AVAILABLE, LOCKED, SOLD
+    String status;
+
+    // ------------------------------------------
 }

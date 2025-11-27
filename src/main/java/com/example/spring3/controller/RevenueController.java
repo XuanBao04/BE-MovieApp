@@ -11,14 +11,13 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate; // CHÚ Ý: Dùng LocalDate
 
 @RestController
-@RequestMapping("/statistics")
+@RequestMapping("/revenues")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class StatisticController {
+public class RevenueController {
 
     ReveuneService reveuneService;
-
-    @GetMapping("/revenue")
+    @GetMapping
     public ApiResponse<Double> getRevenue(
             // 1. Sửa LocalDateTime thành LocalDate
             // 2. Thêm @DateTimeFormat để Spring hiểu chuỗi "yyyy-MM-dd"

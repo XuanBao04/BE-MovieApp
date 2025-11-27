@@ -1,6 +1,6 @@
 package com.example.spring3.configuration;
 
-import com.example.spring3.dto.request.ApiResponse;
+import com.example.spring3.dto.response.ApiResponse;
 import com.example.spring3.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

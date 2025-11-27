@@ -1,6 +1,6 @@
 package com.example.spring3.controller;
 
-import com.example.spring3.dto.request.ApiResponse;
+import com.example.spring3.dto.response.ApiResponse;
 import com.example.spring3.dto.request.movie.MovieCreateRequest;
 import com.example.spring3.dto.request.movie.MovieUpdateRequest;
 import com.example.spring3.dto.response.MovieResponse;

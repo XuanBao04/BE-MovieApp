@@ -1,6 +1,6 @@
 package com.example.spring3.exception;
 
-import com.example.spring3.dto.request.ApiResponse;
+import com.example.spring3.dto.response.ApiResponse;
 import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;

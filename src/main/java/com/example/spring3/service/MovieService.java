@@ -36,13 +36,22 @@ public class MovieService {
                 .map(movieMapper::toMovieResponse)
                 .toList();
     }
- // lấy danh sách movies sắp chiếu (movie trên ui người dùng)
-    public List<MovieResponse> getMoviesforUser() {
-        var movies = movieRepository.findByReleaseDateBefore(LocalDate.now());
+ // lấy danh sách movies sắp chiếu (in the future)
+    public List<MovieResponse> getMoviesReleaseDateAfter() {
+        var movies = movieRepository.findByReleaseDateAfter(LocalDate.now());
         return movies.stream()
                 .map(movieMapper::toMovieResponse)
                 .toList();
     }
+    // lấy danh sách movies đã chiếu (in the past)
+    public List<MovieResponse> getMoviesReleaseDateBefore() {
+        var movies = movieRepository.findByReleaseDateLessThanEqual(LocalDate.now());
+        return movies.stream()
+                .map(movieMapper::toMovieResponse)
+                .toList();
+    }
+
+
 
 
     // lấy 1 movie theo id

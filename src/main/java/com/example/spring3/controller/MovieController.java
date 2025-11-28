@@ -30,6 +30,20 @@ public class MovieController {
                 .result(movieService.getMovies())
                 .build();
     }
+    // Get all movies in the future
+    @GetMapping("/future")
+    public  ApiResponse<List<MovieResponse>> getMoviesReleaseDateAfter(){
+        return ApiResponse.<List<MovieResponse>>builder()
+                .result(movieService.getMoviesReleaseDateAfter())
+                .build();
+    }
+    // Get all past movies
+    @GetMapping("/past")
+    public  ApiResponse<List<MovieResponse>> getMoviesReleaseDateBefore(){
+        return ApiResponse.<List<MovieResponse>>builder()
+                .result(movieService.getMoviesReleaseDateBefore())
+                .build();
+    }
 
     // Get movie by id
     @GetMapping("/{movieId}")

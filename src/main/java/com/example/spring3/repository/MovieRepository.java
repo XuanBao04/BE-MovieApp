@@ -7,5 +7,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface MovieRepository extends JpaRepository<Movie, String> {
-    List<Movie> findByReleaseDateBefore(LocalDate date);
+    List<Movie> findByReleaseDateAfter(LocalDate date);
+
+    List<Movie> findByReleaseDateLessThanEqual(LocalDate date);
+
 }

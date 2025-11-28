@@ -31,4 +31,11 @@ public class ShowtimeService {
 
         return showtimeMapper.toShowtimeResponseList(showtimes);
     }
+    public List<ShowtimeResponse> getAllShowtimes(){
+        var showtimes = showtimeRepository.findAll();
+        return showtimes.stream()
+                .map(showtimeMapper::toShowtimeResponse)
+                .toList();
+    }
+
 }

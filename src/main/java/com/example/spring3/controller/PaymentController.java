@@ -1,6 +1,6 @@
 package com.example.spring3.controller;
 
-import com.example.spring3.dto.request.ApiResponse;
+import com.example.spring3.dto.response.ApiResponse;
 import com.example.spring3.dto.request.BookingRequest;
 import com.example.spring3.dto.request.payment.PaymentCreateRequest;
 import com.example.spring3.dto.response.payment.VNPayResponse;

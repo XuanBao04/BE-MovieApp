@@ -9,6 +9,25 @@ spring:
     username: "root"
     password: "root"
 
+  mail:
+    host: smtp.gmail.com          # Máy chủ SMTP (Ví dụ: Gmail)
+    port: 587                     # Cổng kết nối (Ví dụ: 587 cho TLS)
+    username: lphceu17@gmail.com # Địa chỉ email của bạn
+    password: hmkq exip kliq qmya      # Mật khẩu ứng dụng (App Password) hoặc mật khẩu thường
+    properties:
+      mail:
+        smtp:
+          auth: true              # Bật xác thực SMTP
+          starttls:
+            enable: true          # Bật STARTTLS để mã hóa
+          ssl:
+            trust: smtp.gmail.com # Tin tưởng máy chủ SMTP của Gmail
+  # Cần thiết nếu bạn sử dụng Thymeleaf cho template email
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+
   jpa:
     hibernate:
       ddl-auto: none
@@ -18,3 +37,9 @@ jwt:
   signerKey: "b66eaccd1728dc30de5ce144e38da4e3b4b289a719e794b0db188f3967f1a0b5"
   valid-duration: 600
   refreshable-duration: 604800
+
+app:
+  mail:
+    sender:
+      email: no-reply@cinemabookingbcp.com
+      name: Movie Booking System

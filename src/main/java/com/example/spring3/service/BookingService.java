@@ -45,6 +45,7 @@ public class BookingService {
     ShowtimeRepository showtimeRepository;
     UserService userService; // Giả định service để lấy User
     PaymentService paymentService; // Service xử lý logic VNPay
+    EmailService emailService;
 
     public BookingResultResponse getBookingResult(String txnRef, String paymentId) {
 
@@ -222,16 +223,16 @@ public class BookingService {
 
         if ("00".equals(responseCode)) {
             // Trường hợp 3.1: THANH TOÁN THÀNH CÔNG
-            return handleSuccessfulPayment(tickets, vnpTxnRef, amount);
+            return handleSuccessfulPayment(tickets, vnpTxnRef, transactionId, amount);
 
         } else {
             // Trường hợp 3.2: THANH TOÁN THẤT BẠI/LỖI
-            return handleFailedPayment(tickets);
+            return handleFailedPayment(tickets, transactionId);
         }
     }
 
     /** Xử lý khi thanh toán thành công (vnp_ResponseCode = 00) **/
-    private String handleSuccessfulPayment(List<Ticket> tickets, String vnpTxnRef, long amount) {
+    private String handleSuccessfulPayment(List<Ticket> tickets, String vnpTxnRef, String transactionId, long amount) {
 
         // 1. Tạo bản ghi Payment
         Payment payment = Payment.builder()
@@ -262,11 +263,11 @@ public class BookingService {
         ticketRepository.saveAll(tickets);
         seatRepository.saveAll(seatsToUpdate);
 
-        // 3. (Optional) Gửi email xác nhận vé
-        // emailService.sendConfirmationEmail(tickets);
+        // --- 3. GỬI EMAIL XÁC NHẬN VÉ ---
+        BookingResultResponse bookingResultResponse = mapToBookingResultResponse(tickets, savedPayment);
+        emailService.sendBookingConfirmationEmail(bookingResultResponse);
 
-        // Thay đổi: Ghép với URL Client
-
+        // 4. Trả về URL Client
         String returnUrlParam = String.format(
                 "http://localhost:5173/booking/result?status=success&txnRef=%s&paymentId=%s",
                 vnpTxnRef,
@@ -276,7 +277,7 @@ public class BookingService {
     }
 
     /** Xử lý khi thanh toán thất bại (vnp_ResponseCode != 00) **/
-    private String handleFailedPayment(List<Ticket> tickets) {
+    private String handleFailedPayment(List<Ticket> tickets, String transactionId) {
 
         List<Seat> seatsToRelease = new ArrayList<>();
 
@@ -294,6 +295,10 @@ public class BookingService {
         ticketRepository.saveAll(tickets);
         seatRepository.saveAll(seatsToRelease);
 
-        return "/failed";
+        String returnUrlParam = String.format(
+                "http://localhost:5173/booking/result?status=failed&transactionId=%s",
+                transactionId);
+
+        return returnUrlParam;
     }
 }

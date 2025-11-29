@@ -1,10 +1,9 @@
 package com.example.spring3.controller;
 
-import com.example.spring3.dto.request.ApiResponse;
+import com.example.spring3.dto.response.ApiResponse;
 import com.example.spring3.dto.request.UserCreateRequest;
 import com.example.spring3.dto.request.UserUpdateRequest;
 import com.example.spring3.dto.response.UserResponse;
-import com.example.spring3.entity.User;
 import com.example.spring3.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -17,23 +16,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
 @RequestMapping("/users")
 public class UserController {
-   final  UserService userService;
-  // tạo user
+
+    UserService userService;
+
+    // tạo (đăng ký) người dùng
     @PostMapping
-    ApiResponse<User> createUser(@RequestBody @Valid UserCreateRequest request){
-        ApiResponse<User> apiResponse = new ApiResponse<>();
-        apiResponse.setResult(userService.createRequest(request));
-        return apiResponse;
+    ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreateRequest request){
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.createRequest(request))
+                .build();
     }
-    // lấy danh sách user
+    // lấy danh sách tất cả người dùng user
     @GetMapping
     ApiResponse<List<UserResponse>> getUsers() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("Username: {}",authentication.getName());
+        log.info("Email: {}", authentication.getName());
         authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
         return ApiResponse.<List<UserResponse>>builder()
                 .result(userService.getUsers())
@@ -47,10 +48,9 @@ public class UserController {
                 .result(userService.getUser(userId))
                 .build();
     }
-    // lấy thông tin cá nhân
-    @GetMapping("/myinfo")
+    // lấy thông tin người dùng đang đăng nhập
+    @GetMapping("/me")
     ApiResponse<UserResponse> getMyInfo(){
-
         return ApiResponse.<UserResponse>builder()
                 .result(userService.getMyInfo())
                 .build();
@@ -58,9 +58,9 @@ public class UserController {
     // update thông tin user
     @PutMapping("/{userId}")
     ApiResponse<UserResponse> updateUser(@PathVariable ("userId") String userId, @RequestBody @Valid UserUpdateRequest user){
-return ApiResponse.<UserResponse>builder()
-        .result(userService.updateUser(userId,user))
-        .build();
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.updateUser(userId,user))
+                .build();
     }
     // xóa user
     @DeleteMapping("/{userId}")

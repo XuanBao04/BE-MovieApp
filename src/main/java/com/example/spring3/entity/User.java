@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
-import java.util.Set;
-
 @Entity
 @Table(name = "users")
 @Data
@@ -17,12 +14,19 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "user_id", length = 50)
     String id;
-    String username;
+
+    @Column(name = "full_name")
+    String fullName;
+
     String password;
-    String firstName;
-    String lastName;
-    LocalDate dob;
-    @ManyToMany
-    Set<Role> roles;
+
+    String email;
+    String phone;
+
+    @Column(name = "avatar_url")
+    String avatarUrl;
+
+    String role;
 }

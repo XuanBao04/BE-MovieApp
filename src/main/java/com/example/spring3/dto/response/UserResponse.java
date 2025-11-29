@@ -1,11 +1,9 @@
 package com.example.spring3.dto.response;
 
-import com.example.spring3.entity.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -14,9 +12,9 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponse {
      String id;
-     String username;
-     String firstName;
-     String lastName;
-     LocalDate dob;
-     Set<RoleResponse> roles;
+     String fullName;
+     String email;
+     String phone;
+     String avatarUrl;
+     String role;
 }

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title th:remove="all">Xác nhận Đặt vé Xem phim</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f7f7f7;
+        padding: 20px;
+      }
+      .container {
+        max-width: 650px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+      }
+      .header {
+        background-color: #f8455f;
+        color: white;
+        padding: 30px 20px;
+        text-align: center;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 28px;
+      }
+      .content {
+        padding: 30px 40px;
+      }
+      .section-title {
+        color: #25ae4a;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+        margin-top: 25px;
+        margin-bottom: 15px;
+        font-size: 18px;
+      }
+      .info-pair {
+        margin-bottom: 10px;
+        line-height: 1.5;
+      }
+      .info-pair strong {
+        display: inline-block;
+        width: 150px;
+        color: #555;
+      }
+      .ticket-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+      .ticket-table th,
+      .ticket-table td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: center;
+        font-size: 14px;
+      }
+      .ticket-table th {
+        background-color: #f0f0f0;
+        color: #333;
+      }
+      .total-section {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 5px;
+        text-align: right;
+        margin-top: 25px;
+        border: 1px solid #eee;
+      }
+      .total-section strong {
+        font-size: 1.2em;
+        color: #25ae4a;
+      }
+      .footer {
+        text-align: center;
+        padding: 20px 0;
+        font-size: 12px;
+        color: #999;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🎉 Đặt vé Thành công!</h1>
+        <p style="font-size: 16px">
+          Cảm ơn bạn đã tin tưởng dịch vụ của chúng tôi.
+        </p>
+      </div>
+
+      <div class="content">
+        <p>
+          Xin chào <strong th:text="${booking.name}">[Tên Khách hàng]</strong>,
+        </p>
+        <p>
+          Vé xem phim của bạn đã được xác nhận. Vui lòng kiểm tra thông tin chi
+          tiết dưới đây.
+        </p>
+
+        <!-- THÔNG TIN PHIM VÀ SUẤT CHIẾU -->
+        <div class="section-title">Thông tin Suất Chiếu</div>
+        <div class="info-pair">
+          <strong>Phim:</strong>
+          <span th:text="${booking.movieTitle}">Tên Phim</span>
+        </div>
+        <div class="info-pair">
+          <strong>Giờ chiếu:</strong>
+          <span
+            th:text="${booking.startTime != null ? #temporals.format(booking.startTime, timeFormatter.pattern) : 'N/A'}"
+            >HH:mm dd/MM/yyyy</span
+          >
+        </div>
+        <div class="info-pair">
+          <strong>Rạp:</strong>
+          <span th:text="${booking.theaterName}">Tên Rạp</span>
+        </div>
+        <div class="info-pair">
+          <strong>Địa chỉ:</strong>
+          <span th:text="${booking.theaterAddress}">Địa chỉ Rạp</span>
+        </div>
+        <div class="info-pair">
+          <strong>Phòng:</strong>
+          <span th:text="${booking.roomName}">Tên Phòng</span>
+        </div>
+
+        <!-- CHI TIẾT VÉ -->
+        <div class="section-title">
+          Chi tiết Vé Đã Đặt (<span th:text="${#lists.size(booking.tickets)}"
+            >X</span
+          >
+          Vé)
+        </div>
+        <table class="ticket-table">
+          <thead>
+            <tr>
+              <th>Mã Vé</th>
+              <th>Ghế</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="ticket : ${booking.tickets}">
+              <td th:text="${ticket.ticketId}">TID123456</td>
+              <td th:text="${ticket.seatName}">A1</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- THÔNG TIN THANH TOÁN -->
+        <div class="section-title">Thông tin Giao dịch</div>
+        <div class="info-pair">
+          <strong>Mã đơn hàng (Ref):</strong>
+          <span th:text="${booking.orderReferenceId}">VNP_TxnRef</span>
+        </div>
+        <div class="info-pair">
+          <strong>Giao dịch VNPay:</strong>
+          <span th:text="${booking.paymentId}">PaymentID</span>
+        </div>
+        <div class="info-pair">
+          <strong>Thời gian TT:</strong>
+          <span
+            th:text="${booking.paymentTime != null ? #temporals.format(booking.paymentTime, timeFormatter.pattern) : 'N/A'}"
+            >Thời gian</span
+          >
+        </div>
+        <div class="info-pair">
+          <strong>Phương thức:</strong>
+          <span th:text="${booking.paymentMethod}">VNPay</span>
+        </div>
+
+        <!-- TỔNG TIỀN -->
+        <div class="total-section">
+          Tổng thanh toán:
+          <strong
+            th:text="${#numbers.formatDecimal(booking.amount, 0, 'POINT', 0, 'COMMA')} + ' VNĐ'"
+            >0 VNĐ</strong
+          >
+        </div>
+
+        <p
+          style="
+            margin-top: 30px;
+            font-size: 14px;
+            text-align: center;
+            color: #e53935;
+          "
+        >
+          Vui lòng mang theo email này (hoặc mã đơn hàng) để quét và nhận vé tại
+          quầy.
+        </p>
+      </div>
+
+      <div class="footer">
+        &copy;
+        <span th:text="${#dates.year(#dates.createNow())}">2025</span> Cinema
+        Booking System. All rights reserved.
+      </div>
+    </div>
+  </body>
+</html>

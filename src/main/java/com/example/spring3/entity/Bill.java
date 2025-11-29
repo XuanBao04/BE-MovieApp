@@ -27,5 +27,5 @@ public class Bill {
     private User user;
 
     @Column(name = "total_amount")
-    private Double totalAmount;
+    private long totalAmount;
 }

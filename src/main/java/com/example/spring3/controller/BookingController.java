@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/booking")
@@ -42,6 +44,13 @@ public class BookingController {
             // Internal Server Error
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("/me")
+    public List<BookingResultResponse> getMyBooking() {
+        List<BookingResultResponse> resultResponses = bookingService.getMyBooking();
+
+        return resultResponses;
     }
 
 }

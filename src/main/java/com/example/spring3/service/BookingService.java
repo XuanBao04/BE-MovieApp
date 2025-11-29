@@ -2,12 +2,13 @@ package com.example.spring3.service;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import com.example.spring3.entity.*;
+import com.example.spring3.repository.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.example.spring3.configuration.VNPayConfig;
@@ -15,30 +16,19 @@ import com.example.spring3.dto.request.BookingRequest;
 import com.example.spring3.dto.request.payment.PaymentCreateRequest;
 import com.example.spring3.dto.response.BookingResultResponse;
 import com.example.spring3.dto.response.TicketDetailResponse;
-import com.example.spring3.dto.response.payment.PaymentResponse;
 import com.example.spring3.dto.response.payment.VNPayResponse;
-import com.example.spring3.entity.Payment;
-import com.example.spring3.entity.Room;
-import com.example.spring3.entity.Seat;
-import com.example.spring3.entity.Showtime;
-import com.example.spring3.entity.Ticket;
-import com.example.spring3.entity.User;
-import com.example.spring3.exception.AppException;
-import com.example.spring3.repository.PaymentRepository;
-import com.example.spring3.repository.SeatRepository;
-import com.example.spring3.repository.ShowtimeRepository;
-import com.example.spring3.repository.TicketRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BookingService {
-
+    BillService billService;
     TicketRepository ticketRepository;
     SeatRepository seatRepository;
     PaymentRepository paymentRepository;
@@ -62,6 +52,50 @@ public class BookingService {
         // GỌI PHƯƠNG THỨC ÁNH XẠ THỦ CÔNG
         return mapToBookingResultResponse(tickets, payment);
     }
+
+    public List<BookingResultResponse> getMyBooking() {
+        // 1. Lấy User ID từ Security Context (Giả định ID đã được set vào Principal)
+        var context = SecurityContextHolder.getContext();
+        String userId = context.getAuthentication().getName(); // Giả định là ID người dùng
+
+        // 2. Lấy tất cả Tickets (đã hoàn thành/COMPLETED) của người dùng đó
+        // (Bạn nên chỉ lấy vé có status = 1 hoặc orderStatus = COMPLETED để tránh vé pending/failed)
+        List<Ticket> allCompletedTickets = ticketRepository.findByUser_IdAndOrderStatus(userId, "COMPLETED");
+
+        if (allCompletedTickets.isEmpty()) {
+            return Collections.emptyList(); // Trả về danh sách rỗng nếu không có đơn hàng nào
+        }
+
+        // 3. Nhóm các Tickets theo Mã đơn hàng (vnpTxnRef)
+        Map<String, List<Ticket>> ticketsByOrder = allCompletedTickets.stream()
+                .collect(Collectors.groupingBy(Ticket::getVnpTxnRef));
+
+        // 4. Ánh xạ từng nhóm Ticket (tương đương 1 đơn hàng) thành BookingResultResponse
+        List<BookingResultResponse> bookingResults = new ArrayList<>();
+
+        for (Map.Entry<String, List<Ticket>> entry : ticketsByOrder.entrySet()) {
+            List<Ticket> ticketsInOrder = entry.getValue();
+
+            // Lấy thông tin thanh toán (Payment) từ vé đầu tiên trong nhóm
+            Ticket firstTicketInOrder = ticketsInOrder.get(0);
+            Payment payment = firstTicketInOrder.getPayment();
+
+            // Kiểm tra null cho Payment (phòng trường hợp dữ liệu chưa sạch)
+            if (payment == null) {
+                log.warn("Skipping order {} because payment information is missing.", entry.getKey());
+                continue;
+            }
+
+            // Ánh xạ nhóm Ticket và Payment thành BookingResultResponse
+            BookingResultResponse response = mapToBookingResultResponse(ticketsInOrder, payment);
+            bookingResults.add(response);
+        }
+
+        return bookingResults;
+    }
+
+    // Lưu ý: Cần bổ sung phương thức findByUser_UserIdAndOrderStatus trong repository
+    // public List<Ticket> findByUser_UserIdAndOrderStatus(String userId, String status);
 
     // --- 1. Ánh xạ Ticket Detail (Từng vé) ---
     private List<TicketDetailResponse> mapToTicketDetailResponseList(List<Ticket> tickets) {
@@ -105,6 +139,7 @@ public class BookingService {
 
                 // Movie & Showtime
                 .movieTitle(showtime.getMovie().getTitle())
+                .moviePoster(showtime.getMovie().getPosterUrl())
                 .startTime(showtime.getStartTime())
 
                 // Theater & Room
@@ -119,6 +154,8 @@ public class BookingService {
 
     // Thời gian giữ ghế: 15 phút
     private static final long LOCK_DURATION_MINUTES = 15;
+    private final BillRepository billRepository;
+    private final UserRepository userRepository;
 
     public VNPayResponse createBookingAndVnPayUrl(BookingRequest bookingRequest, HttpServletRequest request)
             throws UnsupportedEncodingException {
@@ -209,7 +246,6 @@ public class BookingService {
         if (tickets.isEmpty()) {
             return "Callback Failed: Order Not Found";
         }
-
         // Đảm bảo đơn hàng chưa được xử lý thành công trước đó (kiểm tra kép)
         if (tickets.stream().anyMatch(t -> t.getOrderStatus().equals("COMPLETED"))) {
             return "Callback Success: Order Already Completed";
@@ -262,6 +298,16 @@ public class BookingService {
 
         ticketRepository.saveAll(tickets);
         seatRepository.saveAll(seatsToUpdate);
+
+        User user = userService.findUserById(tickets.getFirst().getUser().getId());
+
+        Bill bill = Bill.builder()
+                .payment(payment)
+                .user(user)
+                .totalAmount(payment.getAmount())
+                .build();
+
+        billRepository.save(bill);
 
         // --- 3. GỬI EMAIL XÁC NHẬN VÉ ---
         BookingResultResponse bookingResultResponse = mapToBookingResultResponse(tickets, savedPayment);

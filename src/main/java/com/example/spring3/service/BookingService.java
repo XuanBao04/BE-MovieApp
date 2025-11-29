@@ -269,7 +269,7 @@ public class BookingService {
 
         // 4. Trả về URL Client
         String returnUrlParam = String.format(
-                "http://localhost:5173/booking/result?status=success&txnRef=%s&paymentId=%s",
+                "http://localhost:5000/booking/result?status=success&txnRef=%s&paymentId=%s",
                 vnpTxnRef,
                 payment.getPaymentId());
 
@@ -296,7 +296,7 @@ public class BookingService {
         seatRepository.saveAll(seatsToRelease);
 
         String returnUrlParam = String.format(
-                "http://localhost:5173/booking/result?status=failed&transactionId=%s",
+                "http://localhost:5000/booking/result?status=failed&transactionId=%s",
                 transactionId);
 
         return returnUrlParam;

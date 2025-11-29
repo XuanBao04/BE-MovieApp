@@ -4,7 +4,6 @@ import com.example.spring3.dto.response.ApiResponse;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//import com.example.spring3.dto.request.ApiResponse;
 import com.example.spring3.dto.response.SeatResponse;
 import com.example.spring3.service.SeatService;
 

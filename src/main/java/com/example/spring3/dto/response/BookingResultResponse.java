@@ -39,6 +39,8 @@ public class BookingResultResponse {
 
     /** Tên Phim */
     String movieTitle;
+    /** Poster */
+    String moviePoster;
     /** Thời gian bắt đầu chiếu */
     LocalDateTime startTime;
 

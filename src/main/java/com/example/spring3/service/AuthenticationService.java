@@ -74,7 +74,7 @@ public class AuthenticationService {
         Instant now = Instant.now();
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getEmail())
+                .subject(user.getId())
                 .issuer("bao.com")
                 .issueTime(Date.from(now))
                 .expirationTime(Date.from(now.plus(Duration.ofSeconds(VALID_DURATION))))

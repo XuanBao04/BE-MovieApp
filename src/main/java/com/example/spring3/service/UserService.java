@@ -56,8 +56,8 @@ public class UserService {
     // lấy thông tin người dùng đang đăng nhập
     public UserResponse getMyInfo() {
         var context = SecurityContextHolder.getContext();
-        String email = context.getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(
+        String id = context.getAuthentication().getName();
+        User user = userRepository.findById(id).orElseThrow(
                 () -> new AppException(ErrorCode.USER_NOT_EXIST));
 
         return userMapper.toUserResponse(user);

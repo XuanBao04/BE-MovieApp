@@ -10,19 +10,18 @@ spring:
     password: "root"
 
   mail:
-    host: smtp.gmail.com          # Máy chủ SMTP (Ví dụ: Gmail)
-    port: 587                     # Cổng kết nối (Ví dụ: 587 cho TLS)
-    username: lphceu17@gmail.com # Địa chỉ email của bạn
-    password: hmkq exip kliq qmya      # Mật khẩu ứng dụng (App Password) hoặc mật khẩu thường
+    host: smtp.gmail.com
+    port: 587
+    username: lphceu17@gmail.com
+    password: hmkq exip kliq qmya
     properties:
       mail:
         smtp:
-          auth: true              # Bật xác thực SMTP
+          auth: true
           starttls:
-            enable: true          # Bật STARTTLS để mã hóa
+            enable: true
           ssl:
-            trust: smtp.gmail.com # Tin tưởng máy chủ SMTP của Gmail
-  # Cần thiết nếu bạn sử dụng Thymeleaf cho template email
+            trust: smtp.gmail.com
   thymeleaf:
     cache: false
     prefix: classpath:/templates/

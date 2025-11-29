@@ -115,7 +115,7 @@ public class PaymentService {
         String vnp_TxnRef = request.getParameter("vnp_TxnRef");
         String responseCode = request.getParameter("vnp_ResponseCode");
 
-        String clientRedirectUrl = "http://localhost:5173/my-bookings"; // URL mặc định của client
+        String clientRedirectUrl = "http://localhost:5000/my-bookings"; // URL mặc định của client
 
         if ("00".equals(responseCode)) {
             // 2. THÀNH CÔNG

@@ -30,4 +30,9 @@ public interface TicketRepository extends JpaRepository<Ticket, String> {
   List<Ticket> getBookedSeats(@Param("showtimeId") String showtimeId);
 
   List<Ticket> findByVnpTxnRef(String vnpTxnRef);
+
+  List<Ticket> findByPayment_PaymentId(String paymentId);
+
+  List<Ticket> findByUser_IdAndOrderStatus(String userId, String orderStatus);
+
 }

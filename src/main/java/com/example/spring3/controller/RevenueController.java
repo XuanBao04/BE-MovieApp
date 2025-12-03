@@ -19,8 +19,6 @@ public class RevenueController {
     ReveuneService reveuneService;
     @GetMapping
     public ApiResponse<Double> getRevenue(
-            // 1. Sửa LocalDateTime thành LocalDate
-            // 2. Thêm @DateTimeFormat để Spring hiểu chuỗi "yyyy-MM-dd"
             @RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
             @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate
     ) {

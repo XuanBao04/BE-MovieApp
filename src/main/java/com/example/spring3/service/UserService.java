@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -28,12 +29,15 @@ public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    CloudinaryService cloudinaryService;
+
 
     // tạo user
     public UserResponse createRequest(UserCreateRequest request) {
         if (userRepository.existsByEmail(request.getEmail()))
             throw new AppException(ErrorCode.USER_EXIST);
         User user = userMapper.toUser(request);
+
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         return userMapper.toUserResponse(userRepository.save(user));
     }
@@ -68,6 +72,18 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("user not found"));
         userMapper.updateUser(user, request);
+
+        if (request.getAvatarFile() != null && !request.getAvatarFile().isEmpty()) {
+            try {
+                // Upload file lên Cloudinary
+                String url = cloudinaryService.uploadImage(request.getAvatarFile());
+
+                user.setAvatarUrl(url);
+
+            } catch (IOException e) {
+                throw new RuntimeException("Lỗi upload ảnh: " + e.getMessage());
+            }
+        }
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         return userMapper.toUserResponse(userRepository.save(user));

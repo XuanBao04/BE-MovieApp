@@ -17,6 +17,5 @@ import lombok.experimental.FieldDefaults;
 public class ShowtimeResponse {
     String showtimeId;
     LocalDateTime startTime;
-    // String roomName;
     Double price;
 }

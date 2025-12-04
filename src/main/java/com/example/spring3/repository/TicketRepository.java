@@ -2,6 +2,7 @@ package com.example.spring3.repository;
 
 import java.util.List;
 
+import com.example.spring3.entity.Payment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,5 +35,7 @@ public interface TicketRepository extends JpaRepository<Ticket, String> {
   List<Ticket> findByPayment_PaymentId(String paymentId);
 
   List<Ticket> findByUser_IdAndOrderStatus(String userId, String orderStatus);
+
+  List<Ticket> findByPayment_PaymentIdAndStatus(String payment, Integer status);
 
 }

@@ -37,6 +37,12 @@ public class BookingController {
     BookingService bookingService;
     private final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy", new Locale("vi", "VN"));
 
+    @GetMapping("")
+    public List<BookingResultResponse> getAll() {
+        List<BookingResultResponse> resultResponses = bookingService.getAllBooking();
+        return  resultResponses;
+    }
+
     @GetMapping("/result")
     public ResponseEntity<BookingResultResponse> getBookingResult(
             @RequestParam("txnRef") String txnRef,

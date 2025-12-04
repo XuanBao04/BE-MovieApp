@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import com.example.spring3.entity.*;
 import com.example.spring3.repository.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +52,22 @@ public class BookingService {
 
         // GỌI PHƯƠNG THỨC ÁNH XẠ THỦ CÔNG
         return mapToBookingResultResponse(tickets, payment);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<BookingResultResponse> getAllBooking() {
+
+        List<BookingResultResponse> bookingResultResponses = new ArrayList<>();
+
+        List<Payment> payments = paymentRepository.findAll();
+
+        for(Payment payment : payments) {
+            List<Ticket> tickets = ticketRepository.findByPayment_PaymentIdAndStatus(payment.getPaymentId(), 1);
+            BookingResultResponse response = mapToBookingResultResponse(tickets, payment);
+            bookingResultResponses.add(response);
+        }
+
+        return bookingResultResponses;
     }
 
     public BookingResultResponse getBookingByPaymentId(String paymentId) {

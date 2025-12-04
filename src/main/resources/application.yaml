@@ -32,9 +32,15 @@ spring:
       ddl-auto: none
     show-sql: true
 
+cloudinary:
+  cloud-name: baofan
+  api-key: 114631956316148
+  api-secret: "MG6touqmeqDzJiyq2eqQIVDUFTw"
+
+
 jwt:
   signerKey: "b66eaccd1728dc30de5ce144e38da4e3b4b289a719e794b0db188f3967f1a0b5"
-  valid-duration: 600
+  valid-duration: 3600
   refreshable-duration: 604800
 
 app:

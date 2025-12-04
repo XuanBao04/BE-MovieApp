@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import java.util.List;
 public class MovieService {
     MovieRepository movieRepository;
     MovieMapper movieMapper;
+    CloudinaryService cloudinaryService;
 
     // lấy all movies
 //    @PreAuthorize("hasRole('ADMIN')")
@@ -34,13 +36,22 @@ public class MovieService {
                 .map(movieMapper::toMovieResponse)
                 .toList();
     }
- // lấy danh sách movies sắp chiếu (movie trên ui người dùng)
-    public List<MovieResponse> getMoviesforUser() {
-        var movies = movieRepository.findByReleaseDateBefore(LocalDate.now());
+ // lấy danh sách movies sắp chiếu (in the future)
+    public List<MovieResponse> getMoviesReleaseDateAfter() {
+        var movies = movieRepository.findByReleaseDateAfter(LocalDate.now());
         return movies.stream()
                 .map(movieMapper::toMovieResponse)
                 .toList();
     }
+    // lấy danh sách movies đã chiếu (in the past)
+    public List<MovieResponse> getMoviesReleaseDateBefore() {
+        var movies = movieRepository.findByReleaseDateLessThanEqual(LocalDate.now());
+        return movies.stream()
+                .map(movieMapper::toMovieResponse)
+                .toList();
+    }
+
+
 
 
     // lấy 1 movie theo id
@@ -54,6 +65,21 @@ public class MovieService {
     public MovieResponse createMovie(MovieCreateRequest request){
 
         Movie movie = movieMapper.toMovie(request);
+
+        if (request.getPosterFile() != null && !request.getPosterFile().isEmpty()) {
+            try {
+                // Upload file lên Cloudinary
+                String url = cloudinaryService.uploadImage(request.getPosterFile());
+
+                // Gán URL vừa tạo được vào Entity Movie
+                movie.setPosterUrl(url);
+
+            } catch (IOException e) {
+                // Xử lý lỗi nếu upload thất bại
+                throw new RuntimeException("Lỗi upload ảnh: " + e.getMessage());
+            }
+        }
+       // lưu xuống db
          movie = movieRepository.save(movie);
         return movieMapper.toMovieResponse(movie);
     }
@@ -61,11 +87,25 @@ public class MovieService {
 
     // update thông tin movie
     @PreAuthorize("hasRole('ADMIN')")
-    public MovieResponse updateMovie(String movieId, MovieUpdateRequest request){
-       Movie movie = movieRepository.findById(movieId)
-               .orElseThrow(()->new RuntimeException("movie not found"));
-       movieMapper.updateMovie(movie,request);
+    public MovieResponse updateMovie(String movieId, MovieUpdateRequest request) {
+        Movie movie = movieRepository.findById(movieId)
+                .orElseThrow(() -> new RuntimeException("Movie not found"));
+        movieMapper.updateMovie(movie, request);
 
+        // Chỉ upload nếu có file mới được gửi lên
+        if (request.getPosterFile() != null && !request.getPosterFile().isEmpty()) {
+            try {
+                // Upload ảnh mới
+                String newUrl = cloudinaryService.uploadImage(request.getPosterFile());
+                // Cập nhật URL mới
+                movie.setPosterUrl(newUrl);
+
+            } catch (IOException e) {
+                throw new RuntimeException("Lỗi upload ảnh khi update: " + e.getMessage());
+            }
+        }
+
+        // 4. Lưu lại
         return movieMapper.toMovieResponse(movieRepository.save(movie));
     }
     @PreAuthorize("hasRole('ADMIN')")

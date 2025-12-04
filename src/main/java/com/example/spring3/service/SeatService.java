@@ -2,6 +2,7 @@ package com.example.spring3.service;
 
 import com.example.spring3.dto.response.SeatResponse;
 import com.example.spring3.mapper.SeatMapper;
+import com.example.spring3.repository.SeatRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

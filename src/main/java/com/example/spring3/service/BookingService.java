@@ -53,6 +53,17 @@ public class BookingService {
         return mapToBookingResultResponse(tickets, payment);
     }
 
+    public BookingResultResponse getBookingByPaymentId(String paymentId) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new RuntimeException("Payment record not found."));
+
+        List<Ticket> tickets = ticketRepository.findByPayment_PaymentId(paymentId);
+
+        BookingResultResponse response = mapToBookingResultResponse(tickets, payment);
+
+        return response;
+    }
+
     public List<BookingResultResponse> getMyBooking() {
         // 1. Lấy User ID từ Security Context (Giả định ID đã được set vào Principal)
         var context = SecurityContextHolder.getContext();

@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -98,6 +99,8 @@ public class BookingController {
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("ORDER_REF", bookingData.getOrderReferenceId());
             parameters.put("CUSTOMER_NAME", bookingData.getName());
+            parameters.put("CUSTOMER_EMAIL", bookingData.getEmail());
+            parameters.put("CUSTOMER_PHONE", bookingData.getPhone());
             parameters.put("MOVIE_TITLE", bookingData.getMovieTitle());
             parameters.put("SHOWTIME", bookingData.getStartTime().format(DATE_TIME_FORMATTER));
             parameters.put("THEATER_ROOM", bookingData.getTheaterName() + " - " + bookingData.getRoomName());
@@ -110,10 +113,12 @@ public class BookingController {
 
 
             // 4. CHUẨN BỊ DATA SOURCE CHO DANH SÁCH CHI TIẾT (Ticket list)
-            JRBeanCollectionDataSource ticketDataSource = new JRBeanCollectionDataSource(bookingData.getTickets());
+            String seatNamesString = bookingData.getTickets().stream()
+                    .map(ticket -> ticket.getSeatName()) // Giả sử Ticket object có method getSeatName()
+                    .collect(Collectors.joining(", "));
 
             // Đặt Data Source vào một Parameter để List Component trong JRXML sử dụng
-            parameters.put("TICKET_LIST_DATA_SOURCE", ticketDataSource);
+            parameters.put("LIST_SEAT_NAMES", seatNamesString);
 
             // 5. Điền dữ liệu vào báo cáo
             // LƯU Ý: Vẫn dùng JREmptyDataSource cho báo cáo chính, vì Data Source cho List
@@ -136,7 +141,7 @@ public class BookingController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
             String filename = paymentId + "_bill.pdf";
-            headers.setContentDispositionFormData("inline", filename);
+            headers.setContentDispositionFormData("attachment", filename);
             headers.setContentLength(pdfBytes.length);
 
             return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
@@ -148,33 +153,6 @@ public class BookingController {
             log.error("Lỗi runtime khi tạo báo cáo: {}", e.getMessage(), e);
             return new ResponseEntity<>(e.getMessage().getBytes(), HttpStatus.NOT_FOUND);
         }
-    }
-
-    // ... (Hàm createDummyBookingData giữ nguyên) ...
-    private BookingResultResponse createDummyBookingData(String orderRef) {
-        List<TicketDetailResponse> tickets = Arrays.asList(
-                TicketDetailResponse.builder().ticketId("681129c0-e2d2-4cc5-a949-c91610ed918d").seatName("A1").ticketPrice(85000.0).type("Standard").build(),
-                TicketDetailResponse.builder().ticketId("a155ac87-5097-402c-9e10-bfb4289419e4").seatName("A2").ticketPrice(85000.0).type("Standard").build(),
-                TicketDetailResponse.builder().ticketId("08cbb3bf-1818-424b-a0fc-308352f928cb").seatName("VIP1").ticketPrice(120000.0).type("VIP").build()
-        );
-
-        return BookingResultResponse.builder()
-                .name("Nguyen Van A")
-                .email("a.nguyen@example.com")
-                .phone("0901234567")
-                .orderReferenceId(orderRef)
-                .paymentId("PAY_12345")
-                .amount(290000L) // Tổng tiền: 85k + 85k + 120k
-                .paymentMethod("VNPay")
-                .paymentTime(LocalDateTime.now())
-                .paymentStatus(1)
-                .movieTitle("Quái Vật Vô Hình: Cuộc Chiến Cuối Cùng")
-                .startTime(LocalDateTime.now().plusDays(2).withHour(19).withMinute(30))
-                .theaterName("CGV Vincom")
-                .theaterAddress("123 Đường A, Quận B, TP.HCM")
-                .roomName("Phòng 5 (IMAX)")
-                .tickets(tickets)
-                .build();
     }
 
 }

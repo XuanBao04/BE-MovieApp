@@ -23,6 +23,8 @@
 
     <parameter name="ORDER_REF" class="java.lang.String"/>
     <parameter name="CUSTOMER_NAME" class="java.lang.String"/>
+    <parameter name="CUSTOMER_EMAIL" class="java.lang.String"/>
+    <parameter name="CUSTOMER_PHONE" class="java.lang.String"/>
     <parameter name="MOVIE_TITLE" class="java.lang.String"/>
     <parameter name="SHOWTIME" class="java.lang.String"/>
     <parameter name="THEATER_ROOM" class="java.lang.String"/>
@@ -30,11 +32,10 @@
     <parameter name="PAYMENT_TIME" class="java.lang.String"/>
     <parameter name="QR_CODE_DATA" class="java.lang.String"/>
     <parameter name="QR_CODE_IMAGE_URL" class="java.lang.String"/>
-
-    <parameter name="TICKET_LIST_DATA_SOURCE" class="net.sf.jasperreports.engine.JRDataSource"/>
+    <parameter name="LIST_SEAT_NAMES" class="java.lang.String"/>
 
     <title>
-        <band height="120" splitType="Stretch">
+        <band height="130" splitType="Stretch">
             <staticText>
                 <reportElement x="0" y="0" width="555" height="40" uuid="930838f2-6215-4505-a0d2-89d4b52e76bd"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle">
@@ -49,7 +50,7 @@
                 <text><![CDATA[Mã hóa đơn:]]></text>
             </staticText>
             <textField>
-                <reportElement x="120" y="50" width="200" height="20" uuid="133f9a84-7577-48d6-89c5-4fe70f704419"/>
+                <reportElement x="100" y="50" width="200" height="20" uuid="133f9a84-7577-48d6-89c5-4fe70f704419"/>
                 <textElement verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$P{ORDER_REF}]]></textFieldExpression>
             </textField>
@@ -60,15 +61,37 @@
                 <text><![CDATA[Khách hàng:]]></text>
             </staticText>
             <textField>
-                <reportElement x="120" y="70" width="200" height="20" uuid="154a7773-192e-48b6-9002-b56fabdd9eaf"/>
+                <reportElement x="100" y="70" width="200" height="20" uuid="154a7773-192e-48b6-9002-b56fabdd9eaf"/>
                 <textElement verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$P{CUSTOMER_NAME}]]></textFieldExpression>
             </textField>
 
             <staticText>
+                <reportElement x="0" y="90" width="120" height="20" uuid="66950340-ed7a-4721-8d5f-e70b4d6ca179"/>
+                <textElement verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Email:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="100" y="90" width="200" height="20" uuid="154a7773-192e-48b6-9002-b56fabdd9eaf"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$P{CUSTOMER_EMAIL}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="0" y="110" width="120" height="20" uuid="66950340-ed7a-4721-8d5f-e70b4d6ca179"/>
+                <textElement verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[SĐT:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="100" y="110" width="200" height="20" uuid="154a7773-192e-48b6-9002-b56fabdd9eaf"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$P{CUSTOMER_PHONE}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
                 <reportElement x="355" y="50" width="90" height="20" uuid="0f20e986-570f-4611-90dc-e912ca92e224"/>
                 <textElement verticalAlignment="Middle"><font isBold="true"/></textElement>
-                <text><![CDATA[Ngày thanh toán:]]></text>
+                <text><![CDATA[Date:]]></text>
             </staticText>
             <textField>
                 <reportElement x="445" y="50" width="110" height="20" uuid="538a338b-7975-490b-beb6-889e4babf655"/>
@@ -79,7 +102,7 @@
     </title>
 
     <pageHeader>
-        <band height="90">
+        <band height="120">
             <line>
                 <reportElement x="0" y="5" width="555" height="1" uuid="eea6de0d-5b26-4fdc-9adf-3b2b529ee9b9"/>
             </line>
@@ -115,8 +138,19 @@
                 <textElement verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$P{THEATER_ROOM}]]></textFieldExpression>
             </textField>
+
+            <staticText>
+                <reportElement x="0" y="70" width="100" height="20" uuid="045042dd-b604-4eea-9d94-1d6b679821fe"/>
+                <textElement verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Ghế đã chọn:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="100" y="70" width="455" height="20" uuid="049e11e9-549b-4bfd-8857-e1958244dce9"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$P{LIST_SEAT_NAMES}]]></textFieldExpression>
+            </textField>
             <line>
-                <reportElement x="0" y="85" width="555" height="1" uuid="b6e56eb0-81bc-41c4-875f-51844f76cde6"/>
+                <reportElement x="0" y="105" width="555" height="1" uuid="b6e56eb0-81bc-41c4-875f-51844f76cde6"/>
             </line>
         </band>
     </pageHeader>
@@ -126,27 +160,27 @@
     </detail>
 
     <summary>
-        <band height="200">
+        <band height="70">
             <staticText>
-                <reportElement x="350" y="47" width="90" height="25" uuid="ecf2819a-ee5b-422c-8248-75e02b72c1f4" positionType="Float"/>
+                <reportElement x="350" y="0" width="90" height="25" uuid="ecf2819a-ee5b-422c-8248-75e02b72c1f4" positionType="Float"/>
                 <textElement textAlignment="Left" verticalAlignment="Middle"><font size="14" isBold="true"/></textElement>
-                <text><![CDATA[TỔNG tiền:]]></text>
+                <text><![CDATA[Tổng tiền:]]></text>
             </staticText>
             <textField>
-                <reportElement x="440" y="47" width="115" height="25" uuid="dcd80bee-1e6a-41be-8f7f-b4b09e2ed733" positionType="Float"/>
+                <reportElement x="440" y="0" width="115" height="25" uuid="dcd80bee-1e6a-41be-8f7f-b4b09e2ed733" positionType="Float"/>
                 <textElement textAlignment="Right" verticalAlignment="Middle"><font size="14" isBold="true"/></textElement>
                 <textFieldExpression><![CDATA[$P{TOTAL_AMOUNT}]]></textFieldExpression>
             </textField>
 
-            <staticText>
-                <reportElement x="355" y="72" width="100" height="20" uuid="37ffae3d-78e7-4fa9-80f8-3d50ba665e18" positionType="Float"/>
-                <textElement verticalAlignment="Middle"><font isBold="true"/></textElement>
-                <text><![CDATA[Mã QR vé:]]></text>
-            </staticText>
-            <image>
-                <reportElement x="455" y="72" width="100" height="50" uuid="a5e18770-b784-4fce-a27a-29bc6f716ff6" positionType="Float"/>
-                <imageExpression class="java.lang.String"><![CDATA[$P{QR_CODE_IMAGE_URL}]]></imageExpression>
-            </image>
+<!--            <staticText>-->
+<!--                <reportElement x="355" y="72" width="100" height="20" uuid="37ffae3d-78e7-4fa9-80f8-3d50ba665e18" positionType="Float"/>-->
+<!--                <textElement verticalAlignment="Middle"><font isBold="true"/></textElement>-->
+<!--                <text><![CDATA[Mã QR vé:]]></text>-->
+<!--            </staticText>-->
+<!--            <image>-->
+<!--                <reportElement x="455" y="72" width="100" height="50" uuid="a5e18770-b784-4fce-a27a-29bc6f716ff6" positionType="Float"/>-->
+<!--                <imageExpression class="java.lang.String"><![CDATA[$P{QR_CODE_IMAGE_URL}]]></imageExpression>-->
+<!--            </image>-->
 
         </band>
     </summary>

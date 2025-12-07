@@ -10,7 +10,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,9 +56,8 @@ public class UserController {
                 .build();
     }
     // update thông tin user
-    @PutMapping(value = "/{userId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ApiResponse<UserResponse> updateUser(@PathVariable ("userId") String userId,
-                                         @ModelAttribute @Valid UserUpdateRequest user){
+    @PutMapping("/{userId}")
+    ApiResponse<UserResponse> updateUser(@PathVariable ("userId") String userId, @RequestBody @Valid UserUpdateRequest user){
         return ApiResponse.<UserResponse>builder()
                 .result(userService.updateUser(userId,user))
                 .build();

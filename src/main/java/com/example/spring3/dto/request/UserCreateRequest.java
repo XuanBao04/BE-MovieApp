@@ -13,4 +13,6 @@ public class UserCreateRequest {
     String password;
     String email;
     String phone;
+    String avatarUrl;
+    String role;
 }

@@ -1,6 +1,7 @@
 package com.example.spring3.dto.request.movie;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -15,7 +16,8 @@ public class MovieCreateRequest {
     String director;
     String duration;
     String genre;
-    String posterUrl;
+//    String posterUrl;
+    MultipartFile posterFile;
     LocalDate releaseDate;
     String title;
 }

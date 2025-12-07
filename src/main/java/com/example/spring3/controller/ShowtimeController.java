@@ -31,5 +31,13 @@ public class ShowtimeController {
                 .result(showtimeService.getShowtimeByMovieId(movieId))
                 .build();
     }
+    @GetMapping
+    public ApiResponse<List<ShowtimeResponse>> getAllShowtimes(){
+        return ApiResponse.<List<ShowtimeResponse>>builder()
+                .code(200)
+                .result(showtimeService.getAllShowtimes())
+                .build();
+    }
+
 
 }

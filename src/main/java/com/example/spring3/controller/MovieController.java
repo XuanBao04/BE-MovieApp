@@ -9,6 +9,7 @@ import com.example.spring3.service.MovieService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +30,20 @@ public class MovieController {
                 .result(movieService.getMovies())
                 .build();
     }
+    // Get all movies in the future
+    @GetMapping("/future")
+    public  ApiResponse<List<MovieResponse>> getMoviesReleaseDateAfter(){
+        return ApiResponse.<List<MovieResponse>>builder()
+                .result(movieService.getMoviesReleaseDateAfter())
+                .build();
+    }
+    // Get all past movies
+    @GetMapping("/past")
+    public  ApiResponse<List<MovieResponse>> getMoviesReleaseDateBefore(){
+        return ApiResponse.<List<MovieResponse>>builder()
+                .result(movieService.getMoviesReleaseDateBefore())
+                .build();
+    }
 
     // Get movie by id
     @GetMapping("/{movieId}")
@@ -38,21 +53,22 @@ public class MovieController {
                 .result(response)
                 .build();
     }
-
-    // Create movie
-    @PostMapping
-    public ApiResponse<MovieResponse> createMovie(@RequestBody @Valid MovieCreateRequest request) {
-        MovieResponse response = movieService.createMovie(request);
+// create movie
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // Chỉ định nhận form-data
+    public ApiResponse<MovieResponse> createMovie(@ModelAttribute MovieCreateRequest request) {
+        // @ModelAttribute sẽ tự động map các field trong form và file vào DTO
+        MovieResponse result = movieService.createMovie(request);
         return ApiResponse.<MovieResponse>builder()
-                .result(response)
+                .result(result)
                 .build();
     }
 
     // Update movie
-    @PutMapping("/{movieId}")
-    ApiResponse<MovieResponse> updateMovie(@PathVariable ("movieId") String movieId, @RequestBody @Valid MovieUpdateRequest movie){
+    @PutMapping(value = "/{movieId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<MovieResponse> updateMovie(@PathVariable("movieId") String movieId,
+                                                  @ModelAttribute @Valid MovieUpdateRequest request) {
         return ApiResponse.<MovieResponse>builder()
-                .result(movieService.updateMovie(movieId,movie))
+                .result(movieService.updateMovie(movieId, request))
                 .build();
     }
 
